@@ -222,29 +222,7 @@
             <h1>MY WORKS</h1>
           </div>
         </div>
-        <div class="portfolio-box-container" id="projects">
-          <div class="work">
-            <div class="work-img">
-              <img src="/images/portfolio/portfolio-7.jpg" alt="" />
-            </div>
-            <div class="overlay">
-              <div class="project-info">
-                <p class="project-name">Minuza</p>
-                <p class="project-category">Web & App</p>
-              </div>
-              <div class="project-link">
-                <div class="github">
-                  <a href=""><i class="fa-brands fa-github icon"></i></a>
-                </div>
-                <div class="preview">
-                  <a href="#"
-                    ><i class="fa-solid fa-arrow-up-right-from-square icon"></i
-                  ></a>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+        <div class="portfolio-box-container" id="projects"></div>
         <div class="btn-center">
           <button class="btn">View all</button>
         </div>
@@ -386,20 +364,27 @@
         };
         renderSkills();
 
-
         // Display List of Project
-        let projectList;
-        if (localStorage.getItem("projectList") == null) {
-          projectList = [];
-        } else {
-          projectList = JSON.parse(localStorage.getItem("projectList"));
-        }
 
-        let html_project = "";
-        projectList.forEach((element, index) => {
-          html_project += `<div class="work">
+        const getProjects = async () => {
+          let url =
+            "https://my-brand-backend-hi11.onrender.com/mybrand/project";
+          try {
+            let res = await fetch(url);
+            return await res.json();
+          } catch (error) {
+            console.log(error);
+          }
+        };
+
+        const renderProjects = async () => {
+          let Projects = await getProjects();
+          const data = Projects.data;
+          let html = "";
+          data.forEach((element) => {
+            let htmlSegment = `<div class="work">
                   <div class="work-img">
-                    <img src="${element.photo}" alt="" />
+                    <img src="${element.image}" alt="" />
                   </div>
                   <div class="overlay">
                     <div class="project-info">
@@ -418,8 +403,14 @@
                     </div>
                   </div>
                 </div>`;
-        });
-        document.querySelector("#projects").innerHTML = html_project;
+
+            html += htmlSegment;
+          });
+          document.querySelector("#projects").innerHTML = html;
+        };
+        renderProjects();
+
+        
 
         // Display List of Blogs
         let blogList;
