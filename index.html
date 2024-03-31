@@ -410,29 +410,33 @@
         };
         renderProjects();
 
-        
-
         // Display List of Blogs
-        let blogList;
-        if (localStorage.getItem("blogList") == null) {
-          blogList = [];
-        } else {
-          blogList = JSON.parse(localStorage.getItem("blogList"));
-        }
+        const getBlogs = async () => {
+          let url = "https://my-brand-backend-hi11.onrender.com/mybrand/blog";
+          try {
+            let res = await fetch(url);
+            return await res.json();
+          } catch (error) {
+            console.log(error);
+          }
+        };
 
-        let html_blog = "";
-        blogList.forEach((element, index) => {
-          html_blog += `<div class="blog">
+        const renderBlogs = async () => {
+          let Blogs = await getBlogs();
+          const data = Blogs.data;
+          let html = "";
+          data.forEach((element) => {
+            let htmlSegment = `<div class="blog">
                   <div class="blog-header">
                     <div class="blog-img">
-                      <img src="${element.photo}" alt="" />
+                      <img src="${element.image}" alt="" />
                     </div>
                     <div class="blog-date">
-                      <p>${element.timestamp}</p>
+                      <p>${new Date(element.createdAt).toDateString()}</p>
                     </div>
                   </div>
                   <div class="blog-footer">
-                    <a href='pages/single-blog.html?index=${index}'>
+                    <a href='pages/single-blog.html?index=${element._id}'>
                       <h3>${element.blogTitle}</h3></a
                     >
                     <p>
@@ -440,8 +444,12 @@
                     </p>
                   </div>
                 </div>`;
-        });
-        document.querySelector("#blogs").innerHTML = html_blog;
+
+            html += htmlSegment;
+          });
+          document.querySelector("#blogs").innerHTML = html;
+        };
+        renderBlogs();
       }
       // Loads all data
       document.onload = showData();
