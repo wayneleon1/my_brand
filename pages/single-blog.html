@@ -184,47 +184,6 @@
         }
         showComments();
       };
-
-      // let blogTitle = blogPost.blogTitle;
-      // let blogCategory = blogPost.category;
-      // let blogContent = blogPost.blogContent;
-      // let featuredImage = blogPost.photo;
-      // let publishedDate = blogPost.timestamp;
-      // let comments = blogPost.comments.length;
-      // let totalComments =
-      //   comments > 0 ? comments + " Comments" : "No comments added yet!";
-
-      // document.querySelector("#blogTitle").innerHTML = blogTitle;
-      // document.querySelector("#publishedDate").innerHTML = publishedDate;
-      // document.querySelector("#blogCategory").innerHTML = blogCategory;
-      // document.querySelector("#blogContent").innerHTML = blogContent;
-      // document
-      //   .querySelector("#featuredImage")
-      //   .setAttribute("src", featuredImage);
-      // document.querySelector("#totalComments").innerHTML = totalComments;
-
-      // Dispaly added comments
-      // function showComments() {
-      //   let Comments = blogPost.comments;
-      //   if (Comments == null) {
-      //     Comments = [];
-      //   }
-      //   let html_Comment = "";
-      //   Comments.forEach((element, index) => {
-      //     html_Comment += ` <div class="comment-item">
-      //           <div class="comment-user-profile">
-      //             <img src="/images/icons/Profile.png" alt="user-profile" />
-      //           </div>
-      //           <div class="comment-content">
-      //             <h5>${element.names} – ${element.timestamp}</h5>
-      //             <p>
-      //               ${element.contentMsg}
-      //             </p>
-      //           </div>
-      //         </div>`;
-      //   });
-      //   document.querySelector("#posted-comments").innerHTML = html_Comment;
-      // }
       document.onload = renderBlog();
     </script>
   </body>
