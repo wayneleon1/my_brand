@@ -9,7 +9,7 @@ const CurrentDate = new Date().toLocaleDateString("en-US", {
 document.querySelector("#currentDate").innerHTML = CurrentDate;
 
 // Check if the user is logged in
-var isLoggedIn = localStorage.getItem("isLoggedIn");
+var isLoggedIn = localStorage.getItem("token");
 if (!isLoggedIn) {
   window.location.href = "../pages/signin.html";
 }
@@ -33,6 +33,6 @@ clickedBtn.onclick = function () {
 
 // Logout function
 const logout = () => {
-  localStorage.removeItem("isLoggedIn");
+  localStorage.removeItem("token");
   window.location.href = "../pages/signin.html";
 };

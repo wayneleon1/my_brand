@@ -4,7 +4,6 @@ const lastName = document.getElementById("lastName");
 const password = document.getElementById("password");
 const confirmPassword = document.getElementById("confrim_password");
 const email = document.getElementById("email");
-const photo = document.getElementById("photo");
 
 form.addEventListener("submit", (e) => {
   e.preventDefault();
@@ -33,7 +32,6 @@ const validateInputs = () => {
   const passwordValue = password.value.trim();
   const confrimPasswordValue = confirmPassword.value.trim();
   const emailValue = email.value.trim();
-  const photoValue = photo.value.trim();
   let checkEmail =
     /^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/;
 
@@ -77,51 +75,34 @@ const validateInputs = () => {
     setSuccess(confirmPassword);
   }
 
-  if (photoValue === "") {
-    setError(photo, "Photo  is required!");
-  } else {
-    setSuccess(photo);
-  }
   return true;
 };
 
-function addData() {
+async function addData() {
   if (validateInputs() == true) {
     const firstName = document.getElementById("firstName").value;
     const lastName = document.getElementById("lastName").value;
     const password = document.getElementById("password").value;
     const email = document.getElementById("email").value;
-    const photo = document.getElementById("photo").files[0];
 
-    // / Read the file as a data URL
-    const reader = new FileReader();
-    reader.readAsDataURL(photo);
-    reader.onload = function () {
-      const photoData = reader.result;
+    let formData = new FormData();
+    formData.append("firstName", firstName);
+    formData.append("lastName", lastName);
+    formData.append("email", email);
+    formData.append("password", password);
 
-      // Save the Base64 data to local storage
-      localStorage.setItem("photo", photoData);
-
-      let Users;
-      if (localStorage.getItem("Users") == null) {
-        Users = [];
-      } else {
-        Users = JSON.parse(localStorage.getItem("Users"));
+    let response = await fetch(
+      "https://my-brand-backend-hi11.onrender.com/mybrand/user",
+      {
+        method: "POST",
+        body: formData,
       }
-
-      Users.push({
-        firstName: firstName,
-        lastName: lastName,
-        password: password,
-        email: email,
-        photo: photoData,
-        role: "Subcribor",
-        timestamp: new Date().toDateString(),
-      });
-
-      localStorage.setItem("Users", JSON.stringify(Users));
-      document.getElementById("register_form").reset();
-      alert("Account created successfully!");
-    };
+    );
+    let result = await response.json();
+    alert(result.message);
+    if (response.ok) {
+      window.location.href = "./signin.html";
+    }
+    document.getElementById("register_form").reset();
   }
 }

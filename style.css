@@ -407,7 +407,6 @@ nav ul li:hover::after {
   row-gap: 20px;
 }
 .blog {
-  height: 360px;
   display: flex;
   flex-direction: column;
 }

@@ -61,7 +61,7 @@
           <div class="single-blog-titles-icon">
             <div>
               <i class="fa-solid fa-user"></i>
-              <p>admin</p>
+              <p id="author"></p>
             </div>
             <div>
               <i class="fa-regular fa-calendar-days"></i>
@@ -120,52 +120,71 @@
     </footer>
     <script src="/script.js"></script>
     <script>
-      // Parse the URL to extract the index parameter
       const urlParams = new URLSearchParams(window.location.search);
-      const index = parseInt(urlParams.get("index")); // Parse index as integer
-      const blogPost = JSON.parse(localStorage.getItem("blogList"))[index];
+      const blogId = urlParams.get("id");
 
-      let blogTitle = blogPost.blogTitle;
-      let blogCategory = blogPost.category;
-      let blogContent = blogPost.blogContent;
-      let featuredImage = blogPost.photo;
-      let publishedDate = blogPost.timestamp;
-      let comments = blogPost.comments.length;
-      let totalComments =
-        comments > 0 ? comments + " Comments" : "No comments added yet!";
-
-      document.querySelector("#blogTitle").innerHTML = blogTitle;
-      document.querySelector("#publishedDate").innerHTML = publishedDate;
-      document.querySelector("#blogCategory").innerHTML = blogCategory;
-      document.querySelector("#blogContent").innerHTML = blogContent;
-      document
-        .querySelector("#featuredImage")
-        .setAttribute("src", featuredImage);
-      document.querySelector("#totalComments").innerHTML = totalComments;
-
-      // Dispaly added comments
-      function showComments() {
-        let Comments = blogPost.comments;
-        if (Comments == null) {
-          Comments = [];
+      // Fetch  Blog by ID
+      const getBlog = async () => {
+        let url = `https://my-brand-backend-hi11.onrender.com/mybrand/blog/${blogId}`;
+        try {
+          let res = await fetch(url);
+          return await res.json();
+        } catch (error) {
+          console.log(error);
         }
-        let html_Comment = "";
-        Comments.forEach((element, index) => {
-          html_Comment += ` <div class="comment-item">
-                <div class="comment-user-profile">
-                  <img src="/images/icons/Profile.png" alt="user-profile" />
-                </div>
-                <div class="comment-content">
-                  <h5>${element.names} – ${element.timestamp}</h5>
-                  <p>
-                    ${element.contentMsg}
-                  </p>
-                </div>
-              </div>`;
-        });
-        document.querySelector("#posted-comments").innerHTML = html_Comment;
-      }
-      document.onload = showComments();
+      };
+
+      const renderBlog = async () => {
+        let Blogs = await getBlog();
+        const data = Blogs.data;
+
+        let blogTitle = data.blogTitle;
+        let blogCategory = data.category;
+        let blogContent = data.blogContent;
+        let featuredImage = data.image;
+        let author = data.author.firstName;
+        let publishedDate = new Date(data.createdAt).toDateString();
+        let comments = data.comments.length;
+        let totalComments =
+          comments > 0 ? comments + " Comments" : "No comments added yet!";
+
+        document.querySelector("#blogTitle").innerHTML = blogTitle;
+        document.querySelector("#publishedDate").innerHTML = publishedDate;
+        document.querySelector("#blogCategory").innerHTML = blogCategory;
+        document.querySelector("#blogContent").innerHTML = blogContent;
+        document
+          .querySelector("#featuredImage")
+          .setAttribute("src", featuredImage);
+        document.querySelector("#totalComments").innerHTML = totalComments;
+        document.querySelector("#author").innerHTML = author;
+
+        // Dispaly added comments
+        function showComments() {
+          let Comments = data.comments;
+          if (Comments == null) {
+            Comments = [];
+          }
+          let html_Comment = "";
+          Comments.forEach((element, index) => {
+            html_Comment += ` <div class="comment-item">
+                  <div class="comment-user-profile">
+                    <img src="/images/icons/Profile.png" alt="user-profile" />
+                  </div>
+                  <div class="comment-content">
+                    <h5>${element.name} – ${new Date(
+              element.createdAt
+            ).toDateString()}</h5>
+                    <p>
+                      ${element.content}
+                    </p>
+                  </div>
+                </div>`;
+          });
+          document.querySelector("#posted-comments").innerHTML = html_Comment;
+        }
+        showComments();
+      };
+      document.onload = renderBlog();
     </script>
   </body>
 </html>

@@ -222,29 +222,7 @@
             <h1>MY WORKS</h1>
           </div>
         </div>
-        <div class="portfolio-box-container" id="projects">
-          <div class="work">
-            <div class="work-img">
-              <img src="/images/portfolio/portfolio-7.jpg" alt="" />
-            </div>
-            <div class="overlay">
-              <div class="project-info">
-                <p class="project-name">Minuza</p>
-                <p class="project-category">Web & App</p>
-              </div>
-              <div class="project-link">
-                <div class="github">
-                  <a href=""><i class="fa-brands fa-github icon"></i></a>
-                </div>
-                <div class="preview">
-                  <a href="#"
-                    ><i class="fa-solid fa-arrow-up-right-from-square icon"></i
-                  ></a>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+        <div class="portfolio-box-container" id="projects"></div>
         <div class="btn-center">
           <button class="btn">View all</button>
         </div>
@@ -360,35 +338,52 @@
     <script>
       function showData() {
         // Display List of Skills
-        let Skill_list;
-        if (localStorage.getItem("Skill_list") == null) {
-          Skill_list = [];
-        } else {
-          Skill_list = JSON.parse(localStorage.getItem("Skill_list"));
-        }
+        const getSkills = async () => {
+          let url = "https://my-brand-backend-hi11.onrender.com/mybrand/skills";
+          try {
+            let res = await fetch(url);
+            return await res.json();
+          } catch (error) {
+            console.log(error);
+          }
+        };
 
-        let html_skill = "";
-        Skill_list.forEach((element, index) => {
-          html_skill += '<div class="skill-item">';
-          html_skill += `<img src="${element.photo}" alt="Photo" />`;
-          html_skill += "<p>" + element.Language + "</P>";
-          html_skill += "</div>";
-        });
-        document.querySelector("#skills").innerHTML = html_skill;
+        const renderSkills = async () => {
+          let Skills = await getSkills();
+          const data = Skills.data;
+          let html = "";
+          data.forEach((element) => {
+            let htmlSegment = `<div class="skill-item">
+              <img src="${element.image}" alt="Photo" />
+              <p> ${element.name} </P>
+                </div>`;
+
+            html += htmlSegment;
+          });
+          document.querySelector("#skills").innerHTML = html;
+        };
+        renderSkills();
 
         // Display List of Project
-        let projectList;
-        if (localStorage.getItem("projectList") == null) {
-          projectList = [];
-        } else {
-          projectList = JSON.parse(localStorage.getItem("projectList"));
-        }
+        const getProjects = async () => {
+          let url =
+            "https://my-brand-backend-hi11.onrender.com/mybrand/project";
+          try {
+            let res = await fetch(url);
+            return await res.json();
+          } catch (error) {
+            console.log(error);
+          }
+        };
 
-        let html_project = "";
-        projectList.forEach((element, index) => {
-          html_project += `<div class="work">
+        const renderProjects = async () => {
+          let Projects = await getProjects();
+          const data = Projects.data;
+          let html = "";
+          data.forEach((element) => {
+            let htmlSegment = `<div class="work">
                   <div class="work-img">
-                    <img src="${element.photo}" alt="" />
+                    <img src="${element.image}" alt="" />
                   </div>
                   <div class="overlay">
                     <div class="project-info">
@@ -407,30 +402,40 @@
                     </div>
                   </div>
                 </div>`;
-        });
-        document.querySelector("#projects").innerHTML = html_project;
+
+            html += htmlSegment;
+          });
+          document.querySelector("#projects").innerHTML = html;
+        };
+        renderProjects();
 
         // Display List of Blogs
-        let blogList;
-        if (localStorage.getItem("blogList") == null) {
-          blogList = [];
-        } else {
-          blogList = JSON.parse(localStorage.getItem("blogList"));
-        }
+        const getBlogs = async () => {
+          let url = "https://my-brand-backend-hi11.onrender.com/mybrand/blog";
+          try {
+            let res = await fetch(url);
+            return await res.json();
+          } catch (error) {
+            console.log(error);
+          }
+        };
 
-        let html_blog = "";
-        blogList.forEach((element, index) => {
-          html_blog += `<div class="blog">
+        const renderBlogs = async () => {
+          let Blogs = await getBlogs();
+          const data = Blogs.data;
+          let html = "";
+          data.forEach((element) => {
+            let htmlSegment = `<div class="blog">
                   <div class="blog-header">
                     <div class="blog-img">
-                      <img src="${element.photo}" alt="" />
+                      <img src="${element.image}" alt="" />
                     </div>
                     <div class="blog-date">
-                      <p>${element.timestamp}</p>
+                      <p>${new Date(element.createdAt).toDateString()}</p>
                     </div>
                   </div>
                   <div class="blog-footer">
-                    <a href='pages/single-blog.html?index=${index}'>
+                    <a href='pages/single-blog.html?id=${element._id}'>
                       <h3>${element.blogTitle}</h3></a
                     >
                     <p>
@@ -438,8 +443,12 @@
                     </p>
                   </div>
                 </div>`;
-        });
-        document.querySelector("#blogs").innerHTML = html_blog;
+
+            html += htmlSegment;
+          });
+          document.querySelector("#blogs").innerHTML = html;
+        };
+        renderBlogs();
       }
       // Loads all data
       document.onload = showData();
