@@ -180,33 +180,66 @@
     <script>
       // function to show data
       function showData() {
-        let Skill_list;
-        if (localStorage.getItem("Skill_list") == null) {
-          Skill_list = [];
-        } else {
-          Skill_list = JSON.parse(localStorage.getItem("Skill_list"));
-        }
+        const getSkills = async () => {
+          let url = "https://my-brand-backend-hi11.onrender.com/mybrand/skills";
+          try {
+            let res = await fetch(url);
+            return await res.json();
+          } catch (error) {
+            console.log(error);
+          }
+        };
 
-        let html = "";
-        Skill_list.forEach((element, index) => {
-          html += '<tr class="list">';
-          html += "<td  > <img src=" + element.photo + ' alt="Photo" /></td>';
-          html += "<td>" + element.Language + "</td>";
-          html += "<td>" + element.type + "</td>";
-          html += "<td>" + element.timestamp + "</td>";
-          html +=
-            `<td><buttton id="openModalBtn" onclick="updateData(` +
-            index +
-            `)"><i class="fa-regular fa-pen-to-square"></i></button> </td>`;
-          html +=
-            `<td><buttton onclick="deleteData(` +
-            index +
-            `)"><i class="fa-solid fa-trash"></i></button> </td>`;
+        const renderSkills = async () => {
+          let Skills = await getSkills();
+          const data = Skills.data;
+          let html = "";
+          data.forEach((element) => {
+            let htmlSegment = `<tr class="list">
+              <td> <img src="${element.image}" alt="Photo" /></td>
+              <td>${element.name}</td>
+              <td>${element.type}</td>
+              <td>${new Date(element.createdAt).toDateString()}</td>
+              <td><buttton id="openModalBtn" onclick="updateData(${
+                element._id
+              })"><i class="fa-regular fa-pen-to-square"></i></button> </td>
+              <td><buttton onclick="deleteData(${
+                element._id
+              })"><i class="fa-solid fa-trash"></i></button> </td>
+            </tr>`;
+            html += htmlSegment;
+          });
+          document.querySelector("#crudTable tbody").innerHTML = html;
+        };
+        renderSkills();
+        // let Skill_list;
+        // if (localStorage.getItem("Skill_list") == null) {
+        //   Skill_list = [];
+        // } else {
+        //   Skill_list = JSON.parse(localStorage.getItem("Skill_list"));
+        // }
 
-          html += "</tr>";
-        });
-        document.querySelector("#crudTable tbody").innerHTML = html;
+        // let html = "";
+        // Skill_list.forEach((element, index) => {
+        //   html += '<tr class="list">';
+        //   html += "<td  > <img src=" + element.photo + ' alt="Photo" /></td>';
+        //   html += "<td>" + element.Language + "</td>";
+        //   html += "<td>" + element.type + "</td>";
+        //   html += "<td>" + element.timestamp + "</td>";
+        //   html +=
+        //     `<td><buttton id="openModalBtn" onclick="updateData(` +
+        //     index +
+        //     `)"><i class="fa-regular fa-pen-to-square"></i></button> </td>`;
+        //   html +=
+        //     `<td><buttton onclick="deleteData(` +
+        //     index +
+        //     `)"><i class="fa-solid fa-trash"></i></button> </td>`;
+
+        //   html += "</tr>";
+        // });
+        // document.querySelector("#crudTable tbody").innerHTML = html;
       }
+
       // Loads all data
       document.onload = showData();
 
