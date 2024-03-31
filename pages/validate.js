@@ -51,33 +51,27 @@ const validateInputs = () => {
 };
 
 // Login Function
-const userAuthentication = () => {
+const userAuthentication = async () => {
   let email = document.getElementById("email").value;
   let password = document.getElementById("password").value;
 
   if (validateInputs() == true) {
-    // Get the stored users from local storage
-    let storedUsers = JSON.parse(localStorage.getItem("Users"));
-    // Check if the entered email exists in stored users
-    let user = storedUsers.find(function (u) {
-      return u.email === email;
-    });
-
-    // Check if the user exists and the password matches
-    if (user && user.password === password) {
-      alert("Login successful!");
-
-      localStorage.setItem("isLoggedIn", true);
+    let formData = new FormData();
+    formData.append("email", email);
+    formData.append("password", password);
+    let response = await fetch(
+      "https://my-brand-backend-hi11.onrender.com/mybrand/user/login",
+      {
+        method: "POST",
+        body: formData,
+      }
+    );
+    let result = await response.json();
+    alert(result.message);
+    if (response.ok) {
+      localStorage.setItem("token", result.accessToken);
       window.location.href = "../admin/dashboard.html";
-    } else {
-      alert("Invalid email or password. Please try again.");
-      form.reset();
     }
+    document.getElementById("Login_form").reset();
   }
 };
-
-document
-  .getElementById("Login_form")
-  .addEventListener("submit", function (event) {
-    event.preventDefault();
-  });
