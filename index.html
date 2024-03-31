@@ -364,7 +364,6 @@
           let url = "https://my-brand-backend-hi11.onrender.com/mybrand/skills";
           try {
             let res = await fetch(url);
-            console.log(res.json());
             return await res.json();
           } catch (error) {
             console.log(error);
@@ -373,34 +372,20 @@
 
         const renderSkills = async () => {
           let Skills = await getSkills();
+          const data = Skills.data;
           let html = "";
-          Skills.forEach((element) => {
+          data.forEach((element) => {
             let htmlSegment = `<div class="skill-item">
-              <img src="${element.photo}" alt="Photo" />
-              <p> ${element.Language} </P>
+              <img src="${element.image}" alt="Photo" />
+              <p> ${element.name} </P>
                 </div>`;
 
             html += htmlSegment;
           });
-          document.querySelector("#skills").innerHTML = html_skill;
+          document.querySelector("#skills").innerHTML = html;
         };
         renderSkills();
 
-        // let Skill_list;
-        // if (localStorage.getItem("Skill_list") == null) {
-        //   Skill_list = [];
-        // } else {
-        //   Skill_list = JSON.parse(localStorage.getItem("Skill_list"));
-        // }
-
-        // let html_skill = "";
-        // Skill_list.forEach((element, index) => {
-        //   html_skill += '<div class="skill-item">';
-        //   html_skill += `<img src="${element.photo}" alt="Photo" />`;
-        //   html_skill += "<p>" + element.Language + "</P>";
-        //   html_skill += "</div>";
-        // });
-        // document.querySelector("#skills").innerHTML = html_skill;
 
         // Display List of Project
         let projectList;
