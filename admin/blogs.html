@@ -99,8 +99,8 @@
                   <th>Blog Title</th>
                   <th>Category</th>
                   <th>Featured Image</th>
-                  <th>Comments</th>
                   <th>Author</th>
+                  <th>Comments</th>
                   <th>Date Published</th>
                   <th colspan="2">Action</th>
                 </tr>
@@ -195,40 +195,44 @@
     <script>
       // function to show data
       function showData() {
-        let blogList;
-        if (localStorage.getItem("blogList") == null) {
-          blogList = [];
-        } else {
-          blogList = JSON.parse(localStorage.getItem("blogList"));
-        }
+        const getBlogs = async () => {
+          let url = "https://my-brand-backend-hi11.onrender.com/mybrand/blog";
+          try {
+            let res = await fetch(url);
+            return await res.json();
+          } catch (error) {
+            console.log(error);
+          }
+        };
 
-        let html = "";
-        blogList.forEach((element, index) => {
-          html += '<tr class="list">';
-          html += "<td>" + element.blogTitle + "</td>";
-          html += "<td>" + element.category + "</td>";
-          html +=
-            '<td class="t-image" ><img src=' +
-            element.photo +
-            ' alt="Photo" /></td>';
-          html +=
-            `<td><buttton onclick="showComments(` +
-            index +
-            `)"> ${element.comments.length} <i class="fa-solid fa-comments"></i></button> </td>`;
-          html += "<td> admin </td>";
-          html += "<td>" + element.timestamp + "</td>";
-
-          html +=
-            `<td><buttton onclick="deleteData(` +
-            index +
-            `)"><i class="fa-solid fa-trash"></i></button> </td>`;
-          html +=
-            `<td><buttton id="openModalBtn" onclick="updateData(` +
-            index +
-            `)"><i class="fa-regular fa-pen-to-square"></i></button> </td>`;
-          html += "</tr>";
-        });
-        document.querySelector("#crudTable tbody").innerHTML = html;
+        const renderBlogs = async () => {
+          let Blogs = await getBlogs();
+          const data = Blogs.data;
+          let html = "";
+          data.forEach((element) => {
+            let htmlSegment = `<tr class="list">
+              <td> ${element.blogTitle}</td>
+              <td> ${element.category}</td>
+              <td class="t-image"> <img src="${
+                element.image
+              }" alt="Photo" /></td>
+              <td>${element.author.firstName}</td>
+              <td><buttton onclick="showComments(${element._id})"> ${
+              element.comments.length
+            } <i class="fa-solid fa-comments"></i></button> </td>
+              <td>${new Date(element.createdAt).toDateString()}</td>
+              <td><buttton id="openModalBtn" onclick="updateData(${
+                element._id
+              })"><i class="fa-regular fa-pen-to-square"></i></button> </td>
+              <td><buttton onclick="deleteData(${
+                element._id
+              })"><i class="fa-solid fa-trash"></i></button> </td>
+            </tr>`;
+            html += htmlSegment;
+          });
+          document.querySelector("#crudTable tbody").innerHTML = html;
+        };
+        renderBlogs();
       }
       // Loads all data
       document.onload = showData();

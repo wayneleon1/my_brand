@@ -212,32 +212,6 @@
           document.querySelector("#crudTable tbody").innerHTML = html;
         };
         renderSkills();
-        // let Skill_list;
-        // if (localStorage.getItem("Skill_list") == null) {
-        //   Skill_list = [];
-        // } else {
-        //   Skill_list = JSON.parse(localStorage.getItem("Skill_list"));
-        // }
-
-        // let html = "";
-        // Skill_list.forEach((element, index) => {
-        //   html += '<tr class="list">';
-        //   html += "<td  > <img src=" + element.photo + ' alt="Photo" /></td>';
-        //   html += "<td>" + element.Language + "</td>";
-        //   html += "<td>" + element.type + "</td>";
-        //   html += "<td>" + element.timestamp + "</td>";
-        //   html +=
-        //     `<td><buttton id="openModalBtn" onclick="updateData(` +
-        //     index +
-        //     `)"><i class="fa-regular fa-pen-to-square"></i></button> </td>`;
-        //   html +=
-        //     `<td><buttton onclick="deleteData(` +
-        //     index +
-        //     `)"><i class="fa-solid fa-trash"></i></button> </td>`;
-
-        //   html += "</tr>";
-        // });
-        // document.querySelector("#crudTable tbody").innerHTML = html;
       }
 
       // Loads all data
