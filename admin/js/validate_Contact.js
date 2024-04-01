@@ -64,30 +64,30 @@ const validateInputs = () => {
   return true;
 };
 
-function addData() {
+async function addData() {
   if (validateInputs() == true) {
     const names = document.getElementById("names").value;
     const email = document.getElementById("email").value;
     const subject = document.getElementById("subject").value;
     const message = document.getElementById("message").value;
 
-    let messageList;
-    if (localStorage.getItem("messageList") == null) {
-      messageList = [];
-    } else {
-      messageList = JSON.parse(localStorage.getItem("messageList"));
+    let formData = new FormData();
+    formData.append("names", names);
+    formData.append("email", email);
+    formData.append("subject", subject);
+    formData.append("message", message);
+
+    let response = await fetch(
+      "https://my-brand-backend-hi11.onrender.com/mybrand/queries",
+      {
+        method: "POST",
+        body: formData,
+      }
+    );
+    let result = await response.json();
+    alert(result.message);
+    if (response.ok) {
+      document.getElementById("contact-form").reset();
     }
-
-    messageList.push({
-      names: names,
-      email: email,
-      subject: subject,
-      message: message,
-      timestamp: new Date().toDateString(),
-    });
-
-    localStorage.setItem("messageList", JSON.stringify(messageList));
-    document.getElementById("contact-form").reset();
-    alert("Message sent successfully!");
   }
 }
