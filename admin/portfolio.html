@@ -68,7 +68,7 @@
         <div class="topBar">
           <div>
             <h5>Welcome Back Leon !</h5>
-           <p id="currentDate"></p>
+            <p id="currentDate"></p>
           </div>
           <div class="profile-img">
             <img src="images/avatar-shanai.png" alt="Profile" />
@@ -101,7 +101,6 @@
                   <th>Photo</th>
                   <th>Github Link</th>
                   <th>Host Link</th>
-                  <th>Author</th>
                   <th>Date Published</th>
                   <th colspan="2">Action</th>
                 </tr>
@@ -218,38 +217,76 @@
     <script>
       // function to show data
       function showData() {
-        let projectList;
-        if (localStorage.getItem("projectList") == null) {
-          projectList = [];
-        } else {
-          projectList = JSON.parse(localStorage.getItem("projectList"));
-        }
+        const getProjects = async () => {
+          let url =
+            "https://my-brand-backend-hi11.onrender.com/mybrand/project";
+          try {
+            let res = await fetch(url);
+            return await res.json();
+          } catch (error) {
+            console.log(error);
+          }
+        };
 
-        let html = "";
-        projectList.forEach((element, index) => {
-          html += '<tr class="list">';
-          html += "<td>" + element.projectName + "</td>";
-          html += "<td>" + element.category + "</td>";
-          html +=
-            '<td class="t-image" >  <img src=' +
-            element.photo +
-            ' alt="Photo" /></td>';
-          html += "<td>" + element.githubLink + "</td>";
-          html += "<td>" + element.hostedLink + "</td>";
-          html += "<td> admin </td>";
-          html += "<td>" + element.timestamp + "</td>";
+        const renderProjects = async () => {
+          let Projects = await getProjects();
+          const data = Projects.data;
+          let html = "";
+          data.forEach((element) => {
+            let htmlSegment = `<tr class="list">
+              <td> ${element.projectName}</td>
+              <td> ${element.category}</td>
+              <td class="t-image"> <img src="${
+                element.image
+              }" alt="Photo" /></td>
+              <td>${element.githubLink}</td>
+              <td>${element.hostedLink}</td>
+              <td>${new Date(element.createdAt).toDateString()}</td>
+              <td><buttton id="openModalBtn" onclick="updateData(${
+                element._id
+              })"><i class="fa-regular fa-pen-to-square"></i></button> </td>
+              <td><buttton onclick="deleteData(${
+                element._id
+              })"><i class="fa-solid fa-trash"></i></button> </td>
+            </tr>`;
+            html += htmlSegment;
+          });
+          document.querySelector("#crudTable tbody").innerHTML = html;
+        };
+        renderProjects();
 
-          html +=
-            `<td><buttton onclick="deleteData(` +
-            index +
-            `)"><i class="fa-solid fa-trash"></i></button> </td>`;
-          html +=
-            `<td><buttton id="openModalBtn" onclick="updateData(` +
-            index +
-            `)"><i class="fa-regular fa-pen-to-square"></i></button> </td>`;
-          html += "</tr>";
-        });
-        document.querySelector("#crudTable tbody").innerHTML = html;
+        // let projectList;
+        // if (localStorage.getItem("projectList") == null) {
+        //   projectList = [];
+        // } else {
+        //   projectList = JSON.parse(localStorage.getItem("projectList"));
+        // }
+
+        // let html = "";
+        // projectList.forEach((element, index) => {
+        //   html += '<tr class="list">';
+        //   html += "<td>" + element.projectName + "</td>";
+        //   html += "<td>" + element.category + "</td>";
+        //   html +=
+        //     '<td class="t-image" >  <img src=' +
+        //     element.photo +
+        //     ' alt="Photo" /></td>';
+        //   html += "<td>" + element.githubLink + "</td>";
+        //   html += "<td>" + element.hostedLink + "</td>";
+        //   html += "<td> admin </td>";
+        //   html += "<td>" + element.timestamp + "</td>";
+
+        //   html +=
+        //     `<td><buttton onclick="deleteData(` +
+        //     index +
+        //     `)"><i class="fa-solid fa-trash"></i></button> </td>`;
+        //   html +=
+        //     `<td><buttton id="openModalBtn" onclick="updateData(` +
+        //     index +
+        //     `)"><i class="fa-regular fa-pen-to-square"></i></button> </td>`;
+        //   html += "</tr>";
+        // });
+        // document.querySelector("#crudTable tbody").innerHTML = html;
       }
 
       // Loads all data
