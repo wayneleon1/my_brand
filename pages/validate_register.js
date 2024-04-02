@@ -90,19 +90,40 @@ async function addData() {
     formData.append("lastName", lastName);
     formData.append("email", email);
     formData.append("password", password);
+    try {
+      let response = await fetch(
+        "https://my-brand-backend-hi11.onrender.com/mybrand/user",
+        {
+          method: "POST",
+          body: formData,
+        }
+      );
 
-    let response = await fetch(
-      "https://my-brand-backend-hi11.onrender.com/mybrand/user",
-      {
-        method: "POST",
-        body: formData,
+      if (!response.ok) {
+        let errorMessage = await response.json();
+        alert(errorMessage.message);
       }
-    );
-    let result = await response.json();
-    alert(result.message);
-    if (response.ok) {
-      window.location.href = "./signin.html";
+
+      let result = await response.json();
+      alert(result.message);
+      window.location.href = "./signin.html"; // Redirect after successful submission
+      document.getElementById("register_form").reset();
+    } catch (error) {
+      console.error("There was a problem with the fetch operation:", error);
     }
-    document.getElementById("register_form").reset();
+
+    // let response = await fetch(
+    //   "https://my-brand-backend-hi11.onrender.com/mybrand/user",
+    //   {
+    //     method: "POST",
+    //     body: formData,
+    //   }
+    // );
+    // let result = await response.json();
+    // alert(result.message);
+    // if (response.ok) {
+    //   window.location.href = "./signin.html";
+    // }
+    // document.getElementById("register_form").reset();
   }
 }

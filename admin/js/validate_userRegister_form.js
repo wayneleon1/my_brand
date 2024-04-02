@@ -81,7 +81,8 @@ const validateInputs = () => {
   return true;
 };
 
-function addData() {
+const apiKey = localStorage.getItem("token");
+async function addData() {
   if (validateInputs() == true) {
     const firstName = document.getElementById("firstName").value;
     const lastName = document.getElementById("lastName").value;
@@ -90,35 +91,37 @@ function addData() {
     const photo = document.getElementById("photo").files[0];
     const role = document.getElementById("role").value;
 
-    // / Read the file as a data URL
-    const reader = new FileReader();
-    reader.readAsDataURL(photo);
-    reader.onload = function () {
-      const photoData = reader.result;
+    let formData = new FormData();
+    formData.append("firstName", firstName);
+    formData.append("lastName", lastName);
+    formData.append("password", password);
+    formData.append("email", email);
+    formData.append("image", photo);
+    formData.append("role", role);
 
-      // Save the Base64 data to local storage
-      localStorage.setItem("photo", photoData);
+    try {
+      let response = await fetch(
+        "https://my-brand-backend-hi11.onrender.com/mybrand/user",
+        {
+          method: "POST",
+          body: formData,
+          headers: {
+            Authorization: `Bearer ${apiKey}`,
+          },
+        }
+      );
 
-      let Users;
-      if (localStorage.getItem("Users") == null) {
-        Users = [];
-      } else {
-        Users = JSON.parse(localStorage.getItem("Users"));
+      if (!response.ok) {
+        let errorMessage = await response.json();
+        alert(errorMessage.message);
       }
 
-      Users.push({
-        firstName: firstName,
-        lastName: lastName,
-        password: password,
-        email: email,
-        photo: photoData,
-        role: role,
-        timestamp: new Date().toDateString(),
-      });
-
-      localStorage.setItem("Users", JSON.stringify(Users));
+      let result = await response.json();
+      alert(result.message);
+      window.location.href = "./users.html";
       document.getElementById("Register").reset();
-      alert("User registered successfully!");
-    };
+    } catch (error) {
+      console.error("There was a problem with the fetch operation:", error);
+    }
   }
 }

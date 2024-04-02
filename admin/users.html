@@ -207,54 +207,69 @@
     </div>
     <script>
       // function to show data
+      const apiKey = localStorage.getItem("token");
       function showData() {
-        let Users;
-        if (localStorage.getItem("Users") == null) {
-          Users = [];
-        } else {
-          Users = JSON.parse(localStorage.getItem("Users"));
-        }
+        const getUsers = async () => {
+          let url = "https://my-brand-backend-hi11.onrender.com/mybrand/user";
+          try {
+            let res = await fetch(url, {
+              headers: {
+                Authorization: `Bearer ${apiKey}`,
+                "Content-Type": "multipart/form-data",
+              },
+            });
+            return await res.json();
+          } catch (error) {
+            console.log(error);
+          }
+        };
 
-        let html = "";
-        Users.forEach((element, index) => {
-          html += '<tr class="list">';
-          html +=
-            '<td class="t-profile" > <img src=' +
-            element.photo +
-            ' alt="Photo" /></td>';
-          html += "<td>" + element.firstName + "</td>";
-          html += "<td>" + element.lastName + "</td>";
-          html += "<td>" + element.email + "</td>";
-          // html += "<td>" + element.password + "</td>";
-          html += "<td>" + element.role + "</td>";
-          html += "<td> " + element.timestamp + " </td>";
-          html +=
-            `<td><buttton id="openModalBtn" onclick="updateData(` +
-            index +
-            `)"><i class="fa-regular fa-pen-to-square"></i></button> </td>`;
-          html +=
-            `<td><buttton onclick="deleteData(` +
-            index +
-            `)"><i class="fa-solid fa-trash"></i></button> </td>`;
-
-          html += "</tr>";
-        });
-        document.querySelector("#crudTable tbody").innerHTML = html;
+        const renderUsers = async () => {
+          let users = await getUsers();
+          const data = users.data;
+          let html = "";
+          data.forEach((element) => {
+            let htmlSegment = `<tr class="list">
+              <td class="t-profile"> <img src="${
+                element.image
+              }" alt="Profile_Picture" /></td>
+                <td> ${element.firstName}</td>
+                <td> ${element.lastName}</td>
+                <td> ${element.email}</td>
+                <td>${element.role}</td>
+                <td>${new Date(element.createdAt).toDateString()}</td>
+                <td><buttton id="openModalBtn" onclick="updateData('${
+                  element._id
+                }')"><i class="fa-regular fa-pen-to-square"></i></button> </td>
+              <td><buttton onclick="deleteData('${
+                element._id
+              }')"><i class="fa-solid fa-trash"></i></button> </td>
+              </tr>`;
+            html += htmlSegment;
+          });
+          document.querySelector("#crudTable tbody").innerHTML = html;
+        };
+        renderUsers();
       }
       // Loads all data
       document.onload = showData();
 
       // function deleteData
-      function deleteData(index) {
-        let Users;
-        if (localStorage.getItem("Users") == null) {
-          Users = [];
-        } else {
-          Users = JSON.parse(localStorage.getItem("Users"));
+      async function deleteData(id) {
+        let response = await fetch(
+          `https://my-brand-backend-hi11.onrender.com/mybrand/user/${id}`,
+          {
+            method: "DELETE",
+            headers: {
+              Authorization: `Bearer ${apiKey}`,
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        );
+        let result = await response.json();
+        if (response.ok) {
+          alert(result.message);
         }
-        Users.splice(index, 1);
-        localStorage.setItem("Users", JSON.stringify(Users));
-        alert("User deleted successfully!");
         showData();
       }
       // function update Data

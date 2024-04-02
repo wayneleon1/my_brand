@@ -75,7 +75,8 @@ const validateInputs = () => {
   return true;
 };
 
-function addData() {
+const apiKey = localStorage.getItem("token");
+async function addData() {
   if (validateInputs() == true) {
     const projectName = document.getElementById("projectName").value;
     const category = document.getElementById("category").value;
@@ -84,34 +85,37 @@ function addData() {
     const photo = document.getElementById("photo").files[0];
     const description = document.getElementById("description").value;
 
-    // / Read the file as a data URL
-    const reader = new FileReader();
-    reader.readAsDataURL(photo);
-    reader.onload = function () {
-      const photoData = reader.result;
-      // Save the Base64 data to local storage
-      localStorage.setItem("photo", photoData);
+    let formData = new FormData();
+    formData.append("projectName", projectName);
+    formData.append("category", category);
+    formData.append("githubLink", githubLink);
+    formData.append("hostedLink", hostedLink);
+    formData.append("image", photo);
+    formData.append("description", description);
 
-      let projectList;
-      if (localStorage.getItem("projectList") == null) {
-        projectList = [];
-      } else {
-        projectList = JSON.parse(localStorage.getItem("projectList"));
+    try {
+      let response = await fetch(
+        "https://my-brand-backend-hi11.onrender.com/mybrand/project",
+        {
+          method: "POST",
+          body: formData,
+          headers: {
+            Authorization: `Bearer ${apiKey}`,
+          },
+        }
+      );
+
+      if (!response.ok) {
+        let errorMessage = await response.json();
+        alert(errorMessage.message);
       }
 
-      projectList.push({
-        projectName: projectName,
-        category: category,
-        githubLink: githubLink,
-        hostedLink: hostedLink,
-        photo: photoData,
-        description: description,
-        timestamp: new Date().toDateString(),
-      });
-
-      localStorage.setItem("projectList", JSON.stringify(projectList));
+      let result = await response.json();
+      alert(result.message);
+      window.location.href = "./portfolio.html";
       document.getElementById("project-form").reset();
-      alert("Project saved successfully!");
-    };
+    } catch (error) {
+      console.error("There was a problem with the fetch operation:", error);
+    }
   }
 }
