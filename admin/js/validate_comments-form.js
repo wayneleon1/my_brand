@@ -56,31 +56,33 @@ const validateInputs = () => {
   return true;
 };
 // Function add Comment
-function addComment() {
+async function addComment() {
   if (validateInputs() == true) {
     const names = document.getElementById("names").value;
     const email = document.getElementById("email").value;
     const contentMsg = document.getElementById("contentMsg").value;
 
-    // Parse the URL to extract the index parameter
+    // Parse the URL to extract the ID parameter
     const urlParams = new URLSearchParams(window.location.search);
-    const index = parseInt(urlParams.get("index")); // Parse index as integer
+    const blogID = urlParams.get("id");
 
-    let blogList;
-    if (localStorage.getItem("blogList") == null) {
-      blogList = [];
-    } else {
-      blogList = JSON.parse(localStorage.getItem("blogList"));
+    let formData = new FormData();
+    formData.append("name", names);
+    formData.append("email", email);
+    formData.append("content", contentMsg);
+
+    let response = await fetch(
+      `https://my-brand-backend-hi11.onrender.com/mybrand/blogComment/${blogID}/comment/create`,
+      {
+        method: "POST",
+        body: formData,
+      }
+    );
+    let result = await response.json();
+    if (response.ok) {
+      alert(result.message);
+      window.location.reload();
     }
-    blogList[index].comments.push({
-      names: names,
-      email: email,
-      contentMsg: contentMsg,
-      timestamp: new Date().toDateString(),
-    });
-
-    localStorage.setItem("blogList", JSON.stringify(blogList));
     document.getElementById("comment-form").reset();
-    alert("Comment added successfully!");
   }
 }
