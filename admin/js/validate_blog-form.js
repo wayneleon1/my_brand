@@ -59,41 +59,44 @@ const validateInputs = () => {
   return true;
 };
 // Function add data
-function addData() {
+const apiKey = localStorage.getItem("token");
+
+async function addData() {
   if (validateInputs() == true) {
     const blogTitle = document.getElementById("blogTitle").value;
     const category = document.getElementById("category").value;
     const blogContent = document.getElementById("blogContent").value;
     const photo = document.getElementById("photo").files[0];
 
-    // / Read the file as a data URL
-    const reader = new FileReader();
-    reader.readAsDataURL(photo);
-    reader.onload = function () {
-      const photoData = reader.result;
+    let formData = new FormData();
+    formData.append("blogTitle", blogTitle);
+    formData.append("category", category);
+    formData.append("blogContent", blogContent);
+    formData.append("image", photo);
 
-      // Save the Base64 data to local storage
-      localStorage.setItem("photo", photoData);
+    try {
+      let response = await fetch(
+        "https://my-brand-backend-hi11.onrender.com/mybrand/blog",
+        {
+          method: "POST",
+          body: formData,
+          headers: {
+            Authorization: `Bearer ${apiKey}`,
+          },
+        }
+      );
 
-      let blogList;
-      if (localStorage.getItem("blogList") == null) {
-        blogList = [];
-      } else {
-        blogList = JSON.parse(localStorage.getItem("blogList"));
+      if (!response.ok) {
+        let errorMessage = await response.json();
+        alert(errorMessage.message);
       }
 
-      blogList.push({
-        blogTitle: blogTitle,
-        category: category,
-        blogContent: blogContent,
-        photo: photoData, // Save the Base64 data here
-        timestamp: new Date().toDateString(),
-        comments: [],
-      });
-
-      localStorage.setItem("blogList", JSON.stringify(blogList));
+      let result = await response.json();
+      alert(result.message);
+      window.location.href = "./blogs.html";
       document.getElementById("blog-form").reset();
-      alert("Blog added successfully!");
-    };
+    } catch (error) {
+      console.error("There was a problem with the fetch operation:", error);
+    }
   }
 }
