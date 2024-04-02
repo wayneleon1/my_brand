@@ -117,35 +117,5 @@ async function addData() {
     } catch (error) {
       console.error("There was a problem with the fetch operation:", error);
     }
-
-    // // / Read the file as a data URL
-    // const reader = new FileReader();
-    // reader.readAsDataURL(photo);
-    // reader.onload = function () {
-    //   const photoData = reader.result;
-    //   // Save the Base64 data to local storage
-    //   localStorage.setItem("photo", photoData);
-
-    //   let projectList;
-    //   if (localStorage.getItem("projectList") == null) {
-    //     projectList = [];
-    //   } else {
-    //     projectList = JSON.parse(localStorage.getItem("projectList"));
-    //   }
-
-    //   projectList.push({
-    //     projectName: projectName,
-    //     category: category,
-    //     githubLink: githubLink,
-    //     hostedLink: hostedLink,
-    //     photo: photoData,
-    //     description: description,
-    //     timestamp: new Date().toDateString(),
-    //   });
-
-    //   localStorage.setItem("projectList", JSON.stringify(projectList));
-    //   document.getElementById("project-form").reset();
-    //   alert("Project saved successfully!");
-    // };
   }
 }

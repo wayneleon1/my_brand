@@ -50,39 +50,42 @@ const validateInputs = () => {
   }
   return true;
 };
+const apiKey = localStorage.getItem("token");
 
-function addData() {
+async function addData() {
   if (validateInputs() == true) {
     const Language = document.getElementById("Language").value;
     const type = document.getElementById("type").value;
     const photo = document.getElementById("photo").files[0];
 
-    // / Read the file as a data URL
-    const reader = new FileReader();
-    reader.readAsDataURL(photo);
-    reader.onload = function () {
-      const photoData = reader.result;
+    let formData = new FormData();
+    formData.append("name", Language);
+    formData.append("type", type);
+    formData.append("image", photo);
 
-      // Save the Base64 data to local storage
-      localStorage.setItem("photo", photoData);
+    try {
+      let response = await fetch(
+        "https://my-brand-backend-hi11.onrender.com/mybrand/skills",
+        {
+          method: "POST",
+          body: formData,
+          headers: {
+            Authorization: `Bearer ${apiKey}`,
+          },
+        }
+      );
 
-      let Skill_list;
-      if (localStorage.getItem("Skill_list") == null) {
-        Skill_list = [];
-      } else {
-        Skill_list = JSON.parse(localStorage.getItem("Skill_list"));
+      if (!response.ok) {
+        let errorMessage = await response.json();
+        alert(errorMessage.message);
       }
 
-      Skill_list.push({
-        Language: Language,
-        type: type,
-        photo: photoData,
-        timestamp: new Date().toDateString(),
-      });
-
-      localStorage.setItem("Skill_list", JSON.stringify(Skill_list));
+      let result = await response.json();
+      alert(result.message);
+      window.location.href = "./skills.html";
       document.getElementById("skills_form").reset();
-      alert("Skill added successfully!");
-    };
+    } catch (error) {
+      console.error("There was a problem with the fetch operation:", error);
+    }
   }
 }
