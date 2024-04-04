@@ -259,41 +259,75 @@
       }
 
       // function update Data
-      function updateData(index) {
+      function updateData(id) {
         // When the user clicks the button, open the modal
         modal.style.display = "block";
 
-        let blogList;
-        if (localStorage.getItem("blogList") == null) {
-          blogList = [];
-        } else {
-          blogList = JSON.parse(localStorage.getItem("blogList"));
-        }
+        const getBlogById = async () => {
+          let url = `https://my-brand-backend-hi11.onrender.com/mybrand/blog/${id}`;
+          try {
+            let res = await fetch(url, {
+              headers: {
+                Authorization: `Bearer ${apiKey}`,
+                "Content-Type": "multipart/form-data",
+              },
+            });
+            return await res.json();
+          } catch (error) {
+            console.log(error);
+          }
+        };
+        const renderBlogById = async () => {
+          let blog = await getBlogById();
+          const data = blog.data;
+          console.log(data);
+          document.getElementById("blogTitle").value = data.blogTitle;
+          document.getElementById("category").value = data.category;
+          document.getElementById("blogContent").value = data.blogContent;
+          // document.getElementById("photo").value = data.image;
+        };
+        renderBlogById();
 
-        document.getElementById("blogTitle").value = blogList[index].blogTitle;
-        document.getElementById("category").value = blogList[index].category;
-        document.getElementById("blogContent").value =
-          blogList[index].blogContent;
-        // document.getElementById("photo").value = blogList[index].photo;
+        document.querySelector("#Update").onclick = async (e) => {
+          e.preventDefault();
+          const blogTitle = document.getElementById("blogTitle").value;
+          const category = document.getElementById("category").value;
+          const blogContent = document.getElementById("blogContent").value;
+          const photo = document.getElementById("photo").files[0];
 
-        document.querySelector("#Update").onclick = () => {
-          blogList[index].blogTitle =
-            document.getElementById("blogTitle").value;
-          blogList[index].category = document.getElementById("category").value;
-          blogList[index].blogContent =
-            document.getElementById("blogContent").value;
-          // blogList[index].photo = document.getElementById("photo").files[0];
-
-          localStorage.setItem("blogList", JSON.stringify(blogList));
-          document.getElementById("edit-blog-form").reset();
-          alert("Blog updated successfully!");
+          let formData = new FormData();
+          formData.append("blogTitle", blogTitle);
+          formData.append("category", category);
+          formData.append("blogContent", blogContent);
+          formData.append("image", photo);
+          try {
+            let response = await fetch(
+              `https://my-brand-backend-hi11.onrender.com/mybrand/blog/${id}`,
+              {
+                method: "PUT",
+                body: formData,
+                headers: {
+                  Authorization: `Bearer ${apiKey}`,
+                },
+              }
+            );
+            if (!response.ok) {
+              let errorMessage = await response.json();
+              alert(errorMessage.message);
+            }
+            let result = await response.json();
+            alert(result.message);
+            window.location.href = "./blogs.html";
+            document.getElementById("edit-blog_form").reset();
+          } catch (error) {
+            console.error(
+              "There was a problem with the fetch operation:",
+              error
+            );
+          }
         };
       }
-      // show Comments / Crud
-      function showComments(index) {
-        // modal.style.display = "block";
-        console.log("Testing");
-      }
+
       // Show  modal
       let modal = document.getElementById("myModal");
       let span = document.getElementsByClassName("close")[0];
@@ -301,11 +335,13 @@
       // When the user clicks on <span> (x), close the modal
       span.onclick = function () {
         modal.style.display = "none";
+        document.getElementById("edit-blog-form").reset();
       };
 
       // When the user clicks anywhere outside of the modal, close it
       window.onclick = function (event) {
         if (event.target == modal) {
+          document.getElementById("edit-blog-form").reset();
           modal.style.display = "none";
         }
       };
