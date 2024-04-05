@@ -310,30 +310,47 @@
 
         renderUserById();
 
-        // let Users;
-        // if (localStorage.getItem("Users") == null) {
-        //   Users = [];
-        // } else {
-        //   Users = JSON.parse(localStorage.getItem("Users"));
-        // }
+        document.querySelector("#Update").onclick = async (e) => {
+          e.preventDefault();
+          const firstName = document.getElementById("firstName").value;
+          const lastName = document.getElementById("lastName").value;
+          const email = document.getElementById("email").value;
+          const role = document.getElementById("role").value;
+          const photo = document.getElementById("photo").files[0];
 
-        // document.getElementById("firstName").value = Users[index].firstName;
-        // document.getElementById("lastName").value = Users[index].lastName;
-        // document.getElementById("email").value = Users[index].email;
-        // document.getElementById("role").value = Users[index].role;
-        // // document.getElementById("photo").value = Users[index].photo;
+          let formData = new FormData();
+          formData.append("firstName", firstName);
+          formData.append("lastName", lastName);
+          formData.append("email", email);
+          formData.append("role", role);
+          formData.append("image", photo);
 
-        // document.querySelector("#Update").onclick = () => {
-        //   Users[index].firstName = document.getElementById("firstName").value;
-        //   Users[index].lastName = document.getElementById("lastName").value;
-        //   Users[index].email = document.getElementById("email").value;
-        //   Users[index].role = document.getElementById("role").value;
-        //   // Users[index].photo = document.getElementById("photo").files[0];
-
-        //   localStorage.setItem("Users", JSON.stringify(Users));
-        //   document.getElementById("edit-Register").reset();
-        //   alert("User updated successfully!");
-        // };
+          try {
+            let response = await fetch(
+              `https://my-brand-backend-hi11.onrender.com/mybrand/user/${id}`,
+              {
+                method: "PUT",
+                body: formData,
+                headers: {
+                  Authorization: `Bearer ${apiKey}`,
+                },
+              }
+            );
+            if (!response.ok) {
+              let errorMessage = await response.json();
+              alert(errorMessage.message);
+            }
+            let result = await response.json();
+            alert(result.message);
+            window.location.href = "./users.html";
+            document.getElementById("edit-Register").reset();
+          } catch (error) {
+            console.error(
+              "There was a problem with the fetch operation:",
+              error
+            );
+          }
+        };
       }
       // Show  modal
       let modal = document.getElementById("myModal");
