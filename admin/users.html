@@ -89,7 +89,12 @@
                 <i class="fa-solid fa-magnifying-glass"></i>
               </div>
               <div class="search-input-wrap">
-                <input type="search" placeholder="search..." />
+                <input
+                  type="search"
+                  id="myInput"
+                  onkeyup="myFunction()"
+                  placeholder="Search for names.."
+                />
               </div>
             </div>
           </div>
@@ -170,9 +175,8 @@
 
                       <select name="" id="role" aria-placeholder="Choose Role">
                         <option value="" disabled selected>Choose Role</option>
-                        <option value="Editor">Editor</option>
-                        <option value="Admin">Admin</option>
-                        <option value="Subcribor">Subscriber</option>
+                        <option value="admin">Admin</option>
+                        <option value="user">User</option>
                       </select>
                       <div class="error"></div>
                     </div>
@@ -272,34 +276,80 @@
         }
         showData();
       }
-      // function update Data
-      function updateData(index) {
+
+      // function update User
+      function updateData(id) {
         // When the user clicks the button, open the modal
         modal.style.display = "block";
 
-        let Users;
-        if (localStorage.getItem("Users") == null) {
-          Users = [];
-        } else {
-          Users = JSON.parse(localStorage.getItem("Users"));
-        }
+        const getUserById = async () => {
+          let url = `https://my-brand-backend-hi11.onrender.com/mybrand/user/${id}`;
+          try {
+            let res = await fetch(url, {
+              headers: {
+                Authorization: `Bearer ${apiKey}`,
+                "Content-Type": "multipart/form-data",
+              },
+            });
+            return await res.json();
+          } catch (error) {
+            console.log(error);
+          }
+        };
 
-        document.getElementById("firstName").value = Users[index].firstName;
-        document.getElementById("lastName").value = Users[index].lastName;
-        document.getElementById("email").value = Users[index].email;
-        document.getElementById("role").value = Users[index].role;
-        // document.getElementById("photo").value = Users[index].photo;
+        const renderUserById = async () => {
+          let User = await getUserById();
+          const data = User.data;
+          console.log(data);
+          document.getElementById("firstName").value = data.firstName;
+          document.getElementById("lastName").value = data.lastName;
+          document.getElementById("email").value = data.email;
+          document.getElementById("role").value = data.role;
+          // document.getElementById("photo").value = data.image;
+        };
 
-        document.querySelector("#Update").onclick = () => {
-          Users[index].firstName = document.getElementById("firstName").value;
-          Users[index].lastName = document.getElementById("lastName").value;
-          Users[index].email = document.getElementById("email").value;
-          Users[index].role = document.getElementById("role").value;
-          // Users[index].photo = document.getElementById("photo").files[0];
+        renderUserById();
 
-          localStorage.setItem("Users", JSON.stringify(Users));
-          document.getElementById("edit-Register").reset();
-          alert("User updated successfully!");
+        document.querySelector("#Update").onclick = async (e) => {
+          e.preventDefault();
+          const firstName = document.getElementById("firstName").value;
+          const lastName = document.getElementById("lastName").value;
+          const email = document.getElementById("email").value;
+          const role = document.getElementById("role").value;
+          const photo = document.getElementById("photo").files[0];
+
+          let formData = new FormData();
+          formData.append("firstName", firstName);
+          formData.append("lastName", lastName);
+          formData.append("email", email);
+          formData.append("role", role);
+          formData.append("image", photo);
+
+          try {
+            let response = await fetch(
+              `https://my-brand-backend-hi11.onrender.com/mybrand/user/${id}`,
+              {
+                method: "PUT",
+                body: formData,
+                headers: {
+                  Authorization: `Bearer ${apiKey}`,
+                },
+              }
+            );
+            if (!response.ok) {
+              let errorMessage = await response.json();
+              alert(errorMessage.message);
+            }
+            let result = await response.json();
+            alert(result.message);
+            window.location.href = "./users.html";
+            document.getElementById("edit-Register").reset();
+          } catch (error) {
+            console.error(
+              "There was a problem with the fetch operation:",
+              error
+            );
+          }
         };
       }
       // Show  modal
@@ -309,15 +359,41 @@
 
       // When the user clicks on <span> (x), close the modal
       span.onclick = function () {
+        document.getElementById("edit-Register").reset();
         modal.style.display = "none";
       };
 
       // When the user clicks anywhere outside of the modal, close it
       window.onclick = function (event) {
         if (event.target == modal) {
+          document.getElementById("edit-Register").reset();
           modal.style.display = "none";
         }
       };
+
+      // Filtered users in Table
+      function myFunction() {
+        // Declare variables
+        let input, filter, table, tr, td, i, txtValue;
+        input = document.getElementById("myInput");
+        filter = input.value.toUpperCase();
+        table = document.getElementById("crudTable");
+        tr = table.getElementsByTagName("tr");
+
+        // Loop through all table rows, and hide those who don't match the search query
+        for (i = 0; i < tr.length; i++) {
+          td = tr[i].getElementsByTagName("td")[1];
+
+          if (td) {
+            txtValue = td.textContent || td.innerText;
+            if (txtValue.toUpperCase().indexOf(filter) > -1) {
+              tr[i].style.display = "";
+            } else {
+              tr[i].style.display = "none";
+            }
+          }
+        }
+      }
     </script>
     <script src="script.js"></script>
   </body>
