@@ -111,6 +111,7 @@
               </thead>
               <tbody></tbody>
             </table>
+            <div id="loader"></div>
           </div>
           <!-- The Modal -->
           <div id="myModal" class="modal">
@@ -200,6 +201,7 @@
         const renderSkills = async () => {
           let Skills = await getSkills();
           const data = Skills.data;
+          document.getElementById("loader").style.display = "none";
           let html = "";
           data.forEach((element) => {
             let htmlSegment = `<tr class="list">

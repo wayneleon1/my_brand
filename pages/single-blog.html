@@ -53,6 +53,7 @@
       </div>
     </header>
     <main>
+      <div id="loader"></div>
       <section class="single-blog-wrap">
         <div class="single-blog-titles">
           <div>
@@ -136,6 +137,7 @@
 
       const renderBlog = async () => {
         let Blogs = await getBlog();
+        document.getElementById("loader").style.display = "none";
         const data = Blogs.data;
 
         let blogTitle = data.blogTitle;
