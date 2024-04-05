@@ -255,6 +255,9 @@ a:is(:link, :active, :visited).active {
 }
 /* Global Table */
 .table-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   width: 100%;
   padding: 10px;
   margin-top: 20px;
@@ -479,4 +482,65 @@ textarea {
   color: crimson;
   text-decoration: none;
   cursor: pointer;
+}
+
+/* Center the loader */
+#loader {
+  margin-top: 20px;
+  width: 40px;
+  height: 40px;
+  border: 5px solid var(--black);
+  border-radius: 50%;
+  border-top: 5px solid var(--green);
+  -webkit-animation: spin 2s linear infinite;
+  animation: spin 2s linear infinite;
+}
+
+@-webkit-keyframes spin {
+  0% {
+    -webkit-transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(360deg);
+  }
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* Add animation to "page content" */
+.animate-bottom {
+  position: relative;
+  -webkit-animation-name: animatebottom;
+  -webkit-animation-duration: 1s;
+  animation-name: animatebottom;
+  animation-duration: 1s;
+}
+
+@-webkit-keyframes animatebottom {
+  from {
+    bottom: -100px;
+    opacity: 0;
+  }
+  to {
+    bottom: 0px;
+    opacity: 1;
+  }
+}
+
+@keyframes animatebottom {
+  from {
+    bottom: -100px;
+    opacity: 0;
+  }
+  to {
+    bottom: 0;
+    opacity: 1;
+  }
 }

@@ -112,6 +112,7 @@
               </thead>
               <tbody></tbody>
             </table>
+            <div id="loader"></div>
           </div>
           <!-- The Modal -->
           <div id="myModal" class="modal">
@@ -214,6 +215,7 @@
 
         const renderBlogs = async () => {
           let Blogs = await getBlogs();
+          document.getElementById("loader").style.display = "none";
           const data = Blogs.data;
           let html = "";
           data.forEach((element) => {

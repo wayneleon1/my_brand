@@ -153,6 +153,7 @@
               </thead>
               <tbody></tbody>
             </table>
+            <div id="loader"></div>
           </div>
         </div>
       </div>
@@ -180,6 +181,7 @@
 
         const renderQueries = async () => {
           let Queries = await getQueries();
+          document.getElementById("loader").style.display = "none";
           const data = Queries.data;
           let html = "";
           data.forEach((element) => {

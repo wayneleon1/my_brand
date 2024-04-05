@@ -111,19 +111,5 @@ async function addData() {
     } catch (error) {
       console.error("There was a problem with the fetch operation:", error);
     }
-
-    // let response = await fetch(
-    //   "https://my-brand-backend-hi11.onrender.com/mybrand/user",
-    //   {
-    //     method: "POST",
-    //     body: formData,
-    //   }
-    // );
-    // let result = await response.json();
-    // alert(result.message);
-    // if (response.ok) {
-    //   window.location.href = "./signin.html";
-    // }
-    // document.getElementById("register_form").reset();
   }
 }
