@@ -3,6 +3,7 @@ const blogTitle = document.getElementById("blogTitle");
 const category = document.getElementById("category");
 const blogContent = document.getElementById("blogContent");
 const photo = document.getElementById("photo");
+const submitbtn = document.getElementById("submitbtn");
 
 form.addEventListener("submit", (e) => {
   e.preventDefault();
@@ -67,6 +68,7 @@ async function addData() {
     const category = document.getElementById("category").value;
     const blogContent = document.getElementById("blogContent").value;
     const photo = document.getElementById("photo").files[0];
+    submitbtn.innerHTML = "Adding...";
 
     let formData = new FormData();
     formData.append("blogTitle", blogTitle);
@@ -85,7 +87,7 @@ async function addData() {
           },
         }
       );
-
+      submitbtn.innerHTML = "Add";
       if (!response.ok) {
         let errorMessage = await response.json();
         alert(errorMessage.message);

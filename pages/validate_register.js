@@ -4,6 +4,7 @@ const lastName = document.getElementById("lastName");
 const password = document.getElementById("password");
 const confirmPassword = document.getElementById("confrim_password");
 const email = document.getElementById("email");
+const submitbtn = document.getElementById("submitbtn");
 
 form.addEventListener("submit", (e) => {
   e.preventDefault();
@@ -84,6 +85,7 @@ async function addData() {
     const lastName = document.getElementById("lastName").value;
     const password = document.getElementById("password").value;
     const email = document.getElementById("email").value;
+    submitbtn.innerHTML = "Registering...";
 
     let formData = new FormData();
     formData.append("firstName", firstName);
@@ -98,6 +100,7 @@ async function addData() {
           body: formData,
         }
       );
+      submitbtn.innerHTML = "Register";
 
       if (!response.ok) {
         let errorMessage = await response.json();

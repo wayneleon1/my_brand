@@ -5,6 +5,7 @@ const githubLink = document.getElementById("githubLink");
 const hostedLink = document.getElementById("hostedLink");
 const photo = document.getElementById("photo");
 const description = document.getElementById("description");
+const submitbtn = document.getElementById("submitbtn");
 
 form.addEventListener("submit", (e) => {
   e.preventDefault();
@@ -84,6 +85,7 @@ async function addData() {
     const hostedLink = document.getElementById("hostedLink").value;
     const photo = document.getElementById("photo").files[0];
     const description = document.getElementById("description").value;
+    submitbtn.innerHTML = "Adding...";
 
     let formData = new FormData();
     formData.append("projectName", projectName);
@@ -105,6 +107,8 @@ async function addData() {
         }
       );
 
+      submitbtn.innerHTML = "Add";
+      
       if (!response.ok) {
         let errorMessage = await response.json();
         alert(errorMessage.message);

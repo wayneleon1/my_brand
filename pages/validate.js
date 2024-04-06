@@ -1,6 +1,7 @@
 const form = document.getElementById("Login_form");
 const email = document.getElementById("email");
 const password = document.getElementById("password");
+const loginBtn = document.getElementById("loginBtn");
 
 form.addEventListener("submit", (e) => {
   e.preventDefault();
@@ -56,6 +57,7 @@ const userAuthentication = async () => {
   let password = document.getElementById("password").value;
 
   if (validateInputs() == true) {
+    loginBtn.innerHTML = "Loading...";
     let formData = new FormData();
     formData.append("email", email);
     formData.append("password", password);
@@ -68,6 +70,7 @@ const userAuthentication = async () => {
     );
     let result = await response.json();
     alert(result.message);
+    loginBtn.innerHTML = "Login";
     if (response.ok) {
       localStorage.setItem("token", result.accessToken);
       window.location.href = "../admin/dashboard.html";
