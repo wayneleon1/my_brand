@@ -3,6 +3,7 @@ const names = document.getElementById("names");
 const email = document.getElementById("email");
 const subject = document.getElementById("subject");
 const message = document.getElementById("message");
+const submitbtn = document.getElementById("submitbtn");
 
 form.addEventListener("submit", (e) => {
   e.preventDefault();
@@ -77,6 +78,8 @@ async function addData() {
     formData.append("subject", subject);
     formData.append("message", message);
 
+    submitbtn.innerHTML = "sending...";
+
     let response = await fetch(
       "https://my-brand-backend-hi11.onrender.com/mybrand/queries",
       {
@@ -84,9 +87,12 @@ async function addData() {
         body: formData,
       }
     );
+
     let result = await response.json();
-    alert(result.message);
+
     if (response.ok) {
+      submitbtn.innerHTML = "Send Message";
+      alert(result.message);
       document.getElementById("contact-form").reset();
     }
   }

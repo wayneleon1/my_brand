@@ -5,6 +5,7 @@ const password = document.getElementById("password");
 const email = document.getElementById("email");
 const photo = document.getElementById("photo");
 const role = document.getElementById("role");
+const submitbtn = document.getElementById("submitbtn");
 
 form.addEventListener("submit", (e) => {
   e.preventDefault();
@@ -90,6 +91,7 @@ async function addData() {
     const email = document.getElementById("email").value;
     const photo = document.getElementById("photo").files[0];
     const role = document.getElementById("role").value;
+    submitbtn.innerHTML = "Adding...";
 
     let formData = new FormData();
     formData.append("firstName", firstName);
@@ -110,6 +112,8 @@ async function addData() {
           },
         }
       );
+
+      submitbtn.innerHTML = "Add";
 
       if (!response.ok) {
         let errorMessage = await response.json();

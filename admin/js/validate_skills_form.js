@@ -2,6 +2,7 @@ const form = document.getElementById("skills_form");
 const Language = document.getElementById("Language");
 const type = document.getElementById("type");
 const photo = document.getElementById("photo");
+const submitbtn = document.getElementById("submitbtn");
 
 form.addEventListener("submit", (e) => {
   e.preventDefault();
@@ -57,6 +58,7 @@ async function addData() {
     const Language = document.getElementById("Language").value;
     const type = document.getElementById("type").value;
     const photo = document.getElementById("photo").files[0];
+    submitbtn.innerHTML = "Adding...";
 
     let formData = new FormData();
     formData.append("name", Language);
@@ -75,6 +77,8 @@ async function addData() {
         }
       );
 
+      submitbtn.innerHTML = "Add";
+      
       if (!response.ok) {
         let errorMessage = await response.json();
         alert(errorMessage.message);
